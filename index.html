@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dream Bakery Rush</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== START SCREEN ===== -->
+  <div id="start-screen" class="screen active">
+    <div class="sparkle-container"></div>
+    <div class="start-content">
+      <div class="title-emoji">🧁</div>
+      <h1 class="game-title">Dream Bakery Rush</h1>
+      <p class="game-subtitle">A Magical Baking Adventure</p>
+      <button id="play-btn" class="btn-primary">✨ PLAY ✨</button>
+    </div>
+  </div>
+
+  <!-- ===== GAME SCREEN ===== -->
+  <div id="game-screen" class="screen">
+    <div class="game-container">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="top-bar-title">🧁 Dream Bakery Rush 🧁</div>
+      </div>
+
+      <!-- Main Game Area -->
+      <div class="game-area">
+        <!-- LEFT PANEL: Customer + Order -->
+        <div class="panel panel-left">
+          <div class="customer-section">
+            <div class="customer-card glass">
+              <div class="customer-avatar" id="customer-avatar">🐰</div>
+              <div class="customer-name" id="customer-name">Bunny</div>
+              <div class="customer-speech" id="customer-speech">I'd like to order...</div>
+            </div>
+          </div>
+          <div class="order-section">
+            <div class="order-card glass" id="order-card">
+              <div class="order-label">📋 ORDER</div>
+              <div class="order-recipe-emoji" id="order-emoji">🎂</div>
+              <div class="order-name" id="order-name">Chocolate Cake</div>
+              <div class="order-ingredients-label">Needs:</div>
+              <div class="order-ingredients" id="order-ingredients"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CENTER PANEL: Workspace -->
+        <div class="panel panel-center">
+          <div class="workspace glass">
+            <div class="workspace-header">🧑‍🍳 Your Bakery Station</div>
+            <div class="workspace-selected" id="workspace-selected">
+              <span class="workspace-placeholder">Select ingredients below...</span>
+            </div>
+          </div>
+          <div class="timer-wrapper">
+            <div class="timer-container">
+              <div class="timer-bar" id="timer-bar"></div>
+            </div>
+            <div class="timer-text" id="timer-text">15s</div>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL: Stats -->
+        <div class="panel panel-right">
+          <div class="stats-grid">
+            <div class="stat-card glass">
+              <div class="stat-icon">⭐</div>
+              <div class="stat-label">Score</div>
+              <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-card glass">
+              <div class="stat-icon">🪙</div>
+              <div class="stat-label">Coins</div>
+              <div class="stat-value" id="coins">0</div>
+            </div>
+            <div class="stat-card glass">
+              <div class="stat-icon">❤️</div>
+              <div class="stat-label">Lives</div>
+              <div class="stat-value" id="lives">3</div>
+            </div>
+            <div class="stat-card glass">
+              <div class="stat-icon">📊</div>
+              <div class="stat-label">Level</div>
+              <div class="stat-value" id="level">1</div>
+            </div>
+            <div class="stat-card glass combo-card">
+              <div class="stat-icon">🔥</div>
+              <div class="stat-label">Combo</div>
+              <div class="stat-value" id="combo">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM: Ingredients + Serve Button -->
+      <div class="bottom-area">
+        <div class="ingredients-label">Choose Your Ingredients</div>
+        <div class="ingredients-row" id="ingredients-row">
+          <button class="ingredient-btn" data-ingredient="base">
+            <span class="ingredient-emoji">🎂</span>
+            <span class="ingredient-name">Cake Base</span>
+          </button>
+          <button class="ingredient-btn" data-ingredient="choco">
+            <span class="ingredient-emoji">🍫</span>
+            <span class="ingredient-name">Chocolate</span>
+          </button>
+          <button class="ingredient-btn" data-ingredient="berry">
+            <span class="ingredient-emoji">🍓</span>
+            <span class="ingredient-name">Strawberry</span>
+          </button>
+          <button class="ingredient-btn" data-ingredient="milk">
+            <span class="ingredient-emoji">🥛</span>
+            <span class="ingredient-name">Milk</span>
+          </button>
+          <button class="ingredient-btn" data-ingredient="sugar">
+            <span class="ingredient-emoji">🍬</span>
+            <span class="ingredient-name">Sugar</span>
+          </button>
+        </div>
+        <button id="serve-btn" class="btn-serve">✨ SERVE ORDER ✨</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== GAME OVER SCREEN ===== -->
+  <div id="gameover-screen" class="screen">
+    <div class="gameover-content glass">
+      <div class="gameover-emoji">🍰</div>
+      <h2 class="gameover-title">Bakery Closed!</h2>
+      <p class="gameover-subtitle">Time to rest and bake again tomorrow...</p>
+      <div class="gameover-stats">
+        <div class="score-card">
+          <div class="score-label">Final Score</div>
+          <div class="score-value" id="final-score">0</div>
+        </div>
+        <div class="score-card">
+          <div class="score-label">Coins Earned</div>
+          <div class="score-value" id="final-coins">0</div>
+        </div>
+        <div class="score-card">
+          <div class="score-label">Level Reached</div>
+          <div class="score-value" id="final-level">1</div>
+        </div>
+      </div>
+      <div class="high-score-card">
+        <div class="highscore-label">🏆 High Score</div>
+        <div class="highscore-value" id="high-score">0</div>
+      </div>
+      <button id="restart-btn" class="btn-primary">🔄 PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
