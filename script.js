@@ -3,61 +3,64 @@
    A magical bakery arcade game built with vanilla JavaScript
    ============================================================ */
 
+// Wait for DOM to be ready before accessing elements
+document.addEventListener('DOMContentLoaded', init);
+
 // ============================================================
 // DATA
 // ============================================================
 
-// Maps ingredient IDs to their display info (name + emoji)
+// Maps ingredient IDs to display info
 const INGREDIENTS = {
-  base:  { name: "Cake Base",  emoji: "🎂" },
-  choco: { name: "Chocolate",  emoji: "🍫" },
-  berry: { name: "Strawberry", emoji: "🍓" },
-  milk:  { name: "Milk",       emoji: "🥛" },
-  sugar: { name: "Sugar",      emoji: "🍬" }
+  base:  { name: 'Cake Base',  emoji: '🎂' },
+  choco: { name: 'Chocolate',  emoji: '🍫' },
+  berry: { name: 'Strawberry', emoji: '🍓' },
+  milk:  { name: 'Milk',       emoji: '🥛' },
+  sugar: { name: 'Sugar',      emoji: '🍬' }
 };
 
-// Recipe database: each recipe has an id, display name, required ingredients,
-// the level it unlocks at, and an emoji icon for the order card.
+// Recipe database: id, name, required ingredients, unlock level, emoji
 const RECIPES = [
-  { id: 1,  name: "Vanilla Cupcake",      ingredients: ["base", "sugar"],               unlockLevel: 1, emoji: "🧁" },
-  { id: 2,  name: "Choco Shot",           ingredients: ["choco", "milk"],               unlockLevel: 1, emoji: "🍫" },
-  { id: 3,  name: "Berry Bowl",           ingredients: ["berry", "sugar"],              unlockLevel: 1, emoji: "🍓" },
-  { id: 4,  name: "Chocolate Cake",       ingredients: ["base", "choco", "sugar"],      unlockLevel: 2, emoji: "🎂" },
-  { id: 5,  name: "Strawberry Cake",      ingredients: ["base", "berry", "sugar"],      unlockLevel: 2, emoji: "🍰" },
-  { id: 6,  name: "Choco Milk",           ingredients: ["milk", "choco", "sugar"],      unlockLevel: 2, emoji: "🥛" },
-  { id: 7,  name: "Berry Milk",           ingredients: ["milk", "berry", "sugar"],      unlockLevel: 2, emoji: "🥤" },
-  { id: 8,  name: "Berry Choco Cake",     ingredients: ["base", "choco", "berry", "sugar"], unlockLevel: 3, emoji: "🍫🍓" },
-  { id: 9,  name: "Fruit Parfait",        ingredients: ["base", "berry", "milk", "sugar"],  unlockLevel: 3, emoji: "🍧" },
-  { id: 10, name: "Choco Berry Shake",    ingredients: ["milk", "choco", "berry", "sugar"],  unlockLevel: 3, emoji: "🥤" },
-  { id: 11, name: "Double Choco Cake",    ingredients: ["base", "choco", "milk", "sugar"],   unlockLevel: 4, emoji: "🎂" },
-  { id: 12, name: "Dream Cake",           ingredients: ["base", "choco", "berry", "milk", "sugar"], unlockLevel: 5, emoji: "🌈🎂" }
+  { id: 1,  name: 'Vanilla Cupcake',      ingredients: ['base', 'sugar'],               unlockLevel: 1, emoji: '🧁' },
+  { id: 2,  name: 'Choco Shot',           ingredients: ['choco', 'milk'],               unlockLevel: 1, emoji: '🍫' },
+  { id: 3,  name: 'Berry Bowl',           ingredients: ['berry', 'sugar'],              unlockLevel: 1, emoji: '🍓' },
+  { id: 4,  name: 'Chocolate Cake',       ingredients: ['base', 'choco', 'sugar'],      unlockLevel: 2, emoji: '🎂' },
+  { id: 5,  name: 'Strawberry Cake',      ingredients: ['base', 'berry', 'sugar'],      unlockLevel: 2, emoji: '🍰' },
+  { id: 6,  name: 'Choco Milk',           ingredients: ['milk', 'choco', 'sugar'],      unlockLevel: 2, emoji: '🥛' },
+  { id: 7,  name: 'Berry Milk',           ingredients: ['milk', 'berry', 'sugar'],      unlockLevel: 2, emoji: '🥤' },
+  { id: 8,  name: 'Berry Choco Cake',     ingredients: ['base', 'choco', 'berry', 'sugar'], unlockLevel: 3, emoji: '🍫🍓' },
+  { id: 9,  name: 'Fruit Parfait',        ingredients: ['base', 'berry', 'milk', 'sugar'],  unlockLevel: 3, emoji: '🍧' },
+  { id: 10, name: 'Choco Berry Shake',    ingredients: ['milk', 'choco', 'berry', 'sugar'],  unlockLevel: 3, emoji: '🥤' },
+  { id: 11, name: 'Double Choco Cake',    ingredients: ['base', 'choco', 'milk', 'sugar'],   unlockLevel: 4, emoji: '🎂' },
+  { id: 12, name: 'Dream Cake',           ingredients: ['base', 'choco', 'berry', 'milk', 'sugar'], unlockLevel: 5, emoji: '🌈🎂' }
 ];
 
-// Cute customer characters that appear in the bakery
+// Customer characters
 const CUSTOMERS = [
-  { name: "Bunny",  emoji: "🐰" },
-  { name: "Kitty",  emoji: "🐱" },
-  { name: "Puppy",  emoji: "🐶" },
-  { name: "Bear",   emoji: "🐻" },
-  { name: "Fox",    emoji: "🦊" },
-  { name: "Owl",    emoji: "🦉" },
-  { name: "Panda",  emoji: "🐼" },
-  { name: "Frog",   emoji: "🐸" },
-  { name: "Rabbit", emoji: "🐇" },
-  { name: "Cat",    emoji: "🐈" }
+  { name: 'Bunny',  emoji: '🐰' },
+  { name: 'Kitty',  emoji: '🐱' },
+  { name: 'Puppy',  emoji: '🐶' },
+  { name: 'Bear',   emoji: '🐻' },
+  { name: 'Fox',    emoji: '🦊' },
+  { name: 'Owl',    emoji: '🦉' },
+  { name: 'Panda',  emoji: '🐼' },
+  { name: 'Frog',   emoji: '🐸' },
+  { name: 'Rabbit', emoji: '🐇' },
+  { name: 'Cat',    emoji: '🐈' }
 ];
 
-// Speech lines for various game events
+// Speech lines for game events
 const SPEECH = {
-  greet: ["I'd like to order...", "Can I have...", "I'm craving...", "One please!"],
-  correct: ["Yummy! Thank you!", "Delicious!", "Perfect!", "Amazing!", "So good!"],
-  wrong: ["That's not what I wanted...", "Hmm, try again?", "Not quite...", "Oh dear..."],
-  timeout: ["Too slow...", "I'm leaving!", "Maybe next time...", "*walks away*"]
+  greet:   ["I'd like to order...", 'Can I have...', "I'm craving...", 'One please!'],
+  correct: ['Yummy! Thank you!', 'Delicious!', 'Perfect!', 'Amazing!', 'So good!'],
+  wrong:   ["That's not what I wanted...", 'Hmm, try again?', 'Not quite...', 'Oh dear...'],
+  timeout: ['Too slow...', "I'm leaving!", 'Maybe next time...', '*walks away*']
 };
 
 // ============================================================
 // GAME STATE
 // ============================================================
+
 const state = {
   score: 0,
   coins: 0,
@@ -72,8 +75,8 @@ const state = {
   highScore: 0
 };
 
-// Timer state (kept separate for clean start/stop)
-let timer = {
+// Timer state
+const timer = {
   running: false,
   rafId: null,
   startTime: 0,
@@ -85,53 +88,48 @@ let timer = {
 // ============================================================
 // DOM REFERENCES
 // ============================================================
-const $ = (id) => document.getElementById(id);
 
-const dom = {
-  startScreen: $('start-screen'),
-  gameScreen: $('game-screen'),
-  gameoverScreen: $('gameover-screen'),
+const $ = id => document.getElementById(id);
+const dom = {};
 
-  customerAvatar: $('customer-avatar'),
-  customerName: $('customer-name'),
-  customerSpeech: $('customer-speech'),
-  orderEmoji: $('order-emoji'),
-  orderName: $('order-name'),
-  orderIngredients: $('order-ingredients'),
-  orderCard: $('order-card'),
-  workspaceSelected: $('workspace-selected'),
-  timerBar: $('timer-bar'),
-  timerText: $('timer-text'),
-
-  score: $('score'),
-  coins: $('coins'),
-  lives: $('lives'),
-  level: $('level'),
-  combo: $('combo'),
-
-  ingredientsRow: $('ingredients-row'),
-  serveBtn: $('serve-btn'),
-  playBtn: $('play-btn'),
-  restartBtn: $('restart-btn'),
-
-  finalScore: $('final-score'),
-  finalCoins: $('final-coins'),
-  finalLevel: $('final-level'),
-  highScore: $('high-score'),
-
-  gameContainer: document.querySelector('.game-container')
-};
+function cacheDom() {
+  dom.startScreen = $('start-screen');
+  dom.gameScreen = $('game-screen');
+  dom.gameoverScreen = $('gameover-screen');
+  dom.customerAvatar = $('customer-avatar');
+  dom.customerName = $('customer-name');
+  dom.customerSpeech = $('customer-speech');
+  dom.orderEmoji = $('order-emoji');
+  dom.orderName = $('order-name');
+  dom.orderIngredients = $('order-ingredients');
+  dom.orderCard = $('order-card');
+  dom.workspaceSelected = $('workspace-selected');
+  dom.timerBar = $('timer-bar');
+  dom.timerText = $('timer-text');
+  dom.score = $('score');
+  dom.coins = $('coins');
+  dom.lives = $('lives');
+  dom.level = $('level');
+  dom.combo = $('combo');
+  dom.ingredientsRow = $('ingredients-row');
+  dom.serveBtn = $('serve-btn');
+  dom.playBtn = $('play-btn');
+  dom.restartBtn = $('restart-btn');
+  dom.finalScore = $('final-score');
+  dom.finalCoins = $('final-coins');
+  dom.finalLevel = $('final-level');
+  dom.highScore = $('high-score');
+  dom.gameContainer = document.querySelector('.game-container');
+}
 
 // ============================================================
 // UTILITY FUNCTIONS
 // ============================================================
 
-// Pick a random element from an array
 function randomPick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// Check if two arrays contain the same items (order-independent)
 function arraysMatch(a, b) {
   if (a.length !== b.length) return false;
   const sortedA = [...a].sort();
@@ -139,27 +137,41 @@ function arraysMatch(a, b) {
   return sortedA.every((val, i) => val === sortedB[i]);
 }
 
-// Get the time limit in seconds for a given level
 function getTimeLimit(level) {
   return Math.max(8, 16 - level);
 }
 
-// Get recipes available at a given level
 function getAvailableRecipes(level) {
   return RECIPES.filter(r => r.unlockLevel <= level);
 }
 
-// Calculate score for a correct order
 function calculateScore(combo) {
   const multiplier = Math.min(3, 1 + combo * 0.2);
   return Math.floor(100 * multiplier);
+}
+
+// Safely read from localStorage
+function loadHighScore() {
+  try {
+    return parseInt(localStorage.getItem('dreamBakeryHighScore')) || 0;
+  } catch (e) {
+    return 0;
+  }
+}
+
+// Safely write to localStorage
+function saveHighScore(score) {
+  try {
+    localStorage.setItem('dreamBakeryHighScore', score.toString());
+  } catch (e) {
+    // localStorage unavailable - silently ignore
+  }
 }
 
 // ============================================================
 // SCREEN MANAGEMENT
 // ============================================================
 
-// Show a screen by ID and hide all others
 function showScreen(screenId) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   $(screenId).classList.add('active');
@@ -169,9 +181,7 @@ function showScreen(screenId) {
 // TIMER
 // ============================================================
 
-// Start the countdown timer for the current order
 function startTimer() {
-  // Stop any existing timer
   stopTimer();
 
   const duration = getTimeLimit(state.level);
@@ -185,7 +195,6 @@ function startTimer() {
   timer.rafId = requestAnimationFrame(tickTimer);
 }
 
-// Stop the timer
 function stopTimer() {
   timer.running = false;
   if (timer.rafId) {
@@ -194,7 +203,6 @@ function stopTimer() {
   }
 }
 
-// Animation frame tick for smooth timer bar updates
 function tickTimer(timestamp) {
   if (!timer.running) return;
 
@@ -208,14 +216,15 @@ function tickTimer(timestamp) {
   if (remaining <= 0) {
     timer.running = false;
     timer.expired = true;
-    handleTimeout();
+    if (!state.isProcessing) {
+      handleTimeout();
+    }
     return;
   }
 
   timer.rafId = requestAnimationFrame(tickTimer);
 }
 
-// Update the timer bar and text based on remaining time
 function updateTimerDisplay(remaining) {
   const pct = (remaining / timer.duration) * 100;
   dom.timerBar.style.width = pct + '%';
@@ -223,7 +232,6 @@ function updateTimerDisplay(remaining) {
   const seconds = Math.ceil(remaining);
   dom.timerText.textContent = seconds + 's';
 
-  // Color the bar based on urgency
   dom.timerBar.classList.remove('warning', 'danger');
   dom.timerText.classList.remove('warning', 'danger');
   if (remaining <= 3) {
@@ -236,38 +244,35 @@ function updateTimerDisplay(remaining) {
 }
 
 // ============================================================
-// CUSTOMER & ORDER GENERATION
+// CUSTOMER & ORDER
 // ============================================================
 
-// Generate a new customer and order
 function nextCustomer() {
   state.isProcessing = false;
   state.selectedIngredients = [];
   timer.expired = false;
 
-  // Clear previous selection
   updateIngredientButtons();
   updateWorkspace();
   dom.serveBtn.disabled = true;
 
-  // Pick a random customer
   state.currentCustomer = randomPick(CUSTOMERS);
   dom.customerAvatar.textContent = state.currentCustomer.emoji;
   dom.customerName.textContent = state.currentCustomer.name;
   dom.customerAvatar.className = 'customer-avatar';
   dom.customerSpeech.textContent = randomPick(SPEECH.greet);
 
-  // Pick a random recipe available at current level
   const available = getAvailableRecipes(state.level);
+  if (available.length === 0) return;
   state.currentRecipe = randomPick(available);
   dom.orderEmoji.textContent = state.currentRecipe.emoji;
   dom.orderName.textContent = state.currentRecipe.name;
-  dom.orderCard.style.animation = 'none';
-  // Force reflow to restart animation
-  void dom.orderCard.offsetHeight;
-  dom.orderCard.style.animation = 'orderAppear 0.5s ease-out';
 
-  // Show required ingredients as tags on the order card
+  // Restart order card animation
+  dom.orderCard.style.animation = 'none';
+  void dom.orderCard.offsetHeight;
+  dom.orderCard.style.animation = 'popIn 0.5s ease-out';
+
   dom.orderIngredients.innerHTML = '';
   state.currentRecipe.ingredients.forEach(id => {
     const ing = INGREDIENTS[id];
@@ -277,7 +282,6 @@ function nextCustomer() {
     dom.orderIngredients.appendChild(tag);
   });
 
-  // Start the timer
   startTimer();
 }
 
@@ -285,7 +289,6 @@ function nextCustomer() {
 // INGREDIENT SELECTION
 // ============================================================
 
-// Toggle an ingredient on/off
 function selectIngredient(id) {
   if (state.isProcessing || timer.expired) return;
 
@@ -301,7 +304,6 @@ function selectIngredient(id) {
   dom.serveBtn.disabled = state.selectedIngredients.length === 0;
 }
 
-// Update visual state of all ingredient buttons
 function updateIngredientButtons() {
   document.querySelectorAll('.ingredient-btn').forEach(btn => {
     const id = btn.dataset.ingredient;
@@ -309,7 +311,6 @@ function updateIngredientButtons() {
   });
 }
 
-// Update the workspace "selected ingredients" display
 function updateWorkspace() {
   const container = dom.workspaceSelected;
   container.innerHTML = '';
@@ -334,7 +335,6 @@ function updateWorkspace() {
 // SERVE ORDER
 // ============================================================
 
-// Check the player's selected ingredients against the current order
 function serveOrder() {
   if (state.isProcessing || timer.expired || state.selectedIngredients.length === 0) return;
   if (!state.currentRecipe) return;
@@ -342,70 +342,52 @@ function serveOrder() {
   state.isProcessing = true;
   stopTimer();
 
-  const selected = state.selectedIngredients;
-  const required = state.currentRecipe.ingredients;
-
-  if (arraysMatch(selected, required)) {
+  if (arraysMatch(state.selectedIngredients, state.currentRecipe.ingredients)) {
     handleCorrect();
   } else {
     handleWrong();
   }
 }
 
-// Handle a correct order
 function handleCorrect() {
   state.combo++;
   state.correctCount++;
 
-  // Calculate and apply score
   const points = calculateScore(state.combo - 1);
   state.score += points;
   state.coins += 10;
 
-  // Happy customer
   dom.customerAvatar.className = 'customer-avatar happy';
   dom.customerSpeech.textContent = randomPick(SPEECH.correct);
 
-  // Show floating score text
-  showFloatingText('+ ' + points + ' ⭐', '#FF6B9D');
-
-  // Confetti burst
+  showFloatingText('+' + points, '#FF6B9D');
   createConfetti();
-
-  // Sparkle effect on coins
   animateStat(dom.coins);
 
-  // Check for level up
   const prevLevel = state.level;
   state.level = Math.floor(state.correctCount / 5) + 1;
 
   updateUI();
 
-  // Show level up celebration if leveled up
   if (state.level > prevLevel) {
     showLevelUp(state.level);
   }
 
-  // Next customer after a brief delay
-  setTimeout(() => {
-    nextCustomer();
-  }, 1200);
+  setTimeout(nextCustomer, 1200);
 }
 
-// Handle a wrong order
 function handleWrong(message) {
+  if (state.lives <= 0) return;
+
   state.combo = 0;
   state.lives--;
 
-  // Sad customer
   dom.customerAvatar.className = 'customer-avatar sad';
   dom.customerSpeech.textContent = message || randomPick(SPEECH.wrong);
 
-  // Screen shake
   dom.gameContainer.classList.add('shake-active');
   setTimeout(() => dom.gameContainer.classList.remove('shake-active'), 500);
 
-  // Red flash overlay
   const overlay = document.createElement('div');
   overlay.className = 'shake-overlay';
   document.body.appendChild(overlay);
@@ -414,26 +396,20 @@ function handleWrong(message) {
   updateUI();
 
   if (state.lives <= 0) {
-    // Game over after a delay
-    setTimeout(() => gameOver(), 1200);
+    setTimeout(gameOver, 1200);
   } else {
-    // Next customer after a brief delay
-    setTimeout(() => {
-      nextCustomer();
-    }, 1200);
+    setTimeout(nextCustomer, 1200);
   }
 }
 
-// Handle timer expiration
 function handleTimeout() {
-  handleWrong('⏰ ' + randomPick(SPEECH.timeout));
+  handleWrong(randomPick(SPEECH.timeout));
 }
 
 // ============================================================
 // UI UPDATES
 // ============================================================
 
-// Update all stats display
 function updateUI() {
   dom.score.textContent = state.score;
   dom.coins.textContent = state.coins;
@@ -442,7 +418,6 @@ function updateUI() {
   dom.combo.textContent = state.combo > 0 ? 'x' + (state.combo + 1) : '0';
 }
 
-// Animate a stat card with a pop effect
 function animateStat(element) {
   const card = element.closest('.stat-card');
   if (card) {
@@ -452,7 +427,6 @@ function animateStat(element) {
   }
 }
 
-// Show floating score text that rises and fades
 function showFloatingText(text, color) {
   const el = document.createElement('div');
   el.textContent = text;
@@ -471,21 +445,6 @@ function showFloatingText(text, color) {
     animation: floatUp 1s ease-out forwards;
   `;
   document.body.appendChild(el);
-
-  // Add keyframes dynamically if not already added
-  if (!document.getElementById('float-up-style')) {
-    const style = document.createElement('style');
-    style.id = 'float-up-style';
-    style.textContent = `
-      @keyframes floatUp {
-        0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
-        30% { opacity: 1; transform: translate(-50%, -60%) scale(1.2); }
-        100% { opacity: 0; transform: translate(-50%, -120%) scale(1); }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
   setTimeout(() => el.remove(), 1000);
 }
 
@@ -493,7 +452,6 @@ function showFloatingText(text, color) {
 // LEVEL UP
 // ============================================================
 
-// Show level up celebration overlay
 function showLevelUp(newLevel) {
   const overlay = document.createElement('div');
   overlay.className = 'level-up-overlay';
@@ -501,25 +459,21 @@ function showLevelUp(newLevel) {
     <div class="level-up-content">
       <div class="level-up-emoji">🎉</div>
       <div class="level-up-title">Level ${newLevel}!</div>
-      <div class="level-up-text">New recipes unlocked! 🧁</div>
+      <div class="level-up-text">New recipes unlocked!</div>
     </div>
   `;
   document.body.appendChild(overlay);
 
-  // Extra confetti for level up
   setTimeout(() => createConfetti(), 200);
   setTimeout(() => createConfetti(), 600);
 
-  setTimeout(() => {
-    overlay.remove();
-  }, 2000);
+  setTimeout(() => overlay.remove(), 2000);
 }
 
 // ============================================================
-// CONFETTI EFFECT
+// CONFETTI
 // ============================================================
 
-// Create a confetti burst using a canvas overlay
 function createConfetti() {
   const existing = document.getElementById('confetti-canvas');
   if (existing) existing.remove();
@@ -535,7 +489,6 @@ function createConfetti() {
   const colors = ['#FF6B9D', '#C084FC', '#FBBF24', '#FFB6C1', '#87CEEB', '#4ADE80', '#FFD700', '#FB923C'];
   const particles = [];
 
-  // Generate confetti pieces
   for (let i = 0; i < 200; i++) {
     particles.push({
       x: Math.random() * canvas.width,
@@ -554,7 +507,7 @@ function createConfetti() {
   let frameCount = 0;
   const maxFrames = 150;
 
-  function animateConfetti() {
+  function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     frameCount++;
     let alive = false;
@@ -582,29 +535,28 @@ function createConfetti() {
     }
 
     if (alive && frameCount < maxFrames) {
-      requestAnimationFrame(animateConfetti);
+      requestAnimationFrame(animate);
     } else {
       canvas.remove();
     }
   }
 
-  requestAnimationFrame(animateConfetti);
+  requestAnimationFrame(animate);
 }
 
 // ============================================================
 // BACKGROUND SPARKLES (Start Screen)
 // ============================================================
 
-// Create floating sparkle elements on the start screen
 function createBackgroundSparkles() {
   const container = document.querySelector('.sparkle-container');
   if (!container) return;
 
-  const sparkleChars = ['✨', '⭐', '💫', '🌟'];
+  const chars = ['✨', '⭐', '💫', '🌟'];
   for (let i = 0; i < 20; i++) {
-    const sparkle = document.createElement('div');
-    sparkle.textContent = randomPick(sparkleChars);
-    sparkle.style.cssText = `
+    const el = document.createElement('div');
+    el.textContent = randomPick(chars);
+    el.style.cssText = `
       position: absolute;
       font-size: ${Math.random() * 16 + 10}px;
       left: ${Math.random() * 100}%;
@@ -613,7 +565,7 @@ function createBackgroundSparkles() {
       animation: sparkleFloat ${Math.random() * 6 + 4}s ease-in-out ${Math.random() * 5}s infinite;
       pointer-events: none;
     `;
-    container.appendChild(sparkle);
+    container.appendChild(el);
   }
 }
 
@@ -621,9 +573,7 @@ function createBackgroundSparkles() {
 // GAME FLOW
 // ============================================================
 
-// Initialize and start the game
 function startGame() {
-  // Reset state
   state.score = 0;
   state.coins = 0;
   state.lives = 3;
@@ -635,48 +585,37 @@ function startGame() {
   state.isProcessing = false;
   timer.expired = false;
 
-  // Load high score
-  state.highScore = parseInt(localStorage.getItem('dreamBakeryHighScore')) || 0;
-
-  // Show game screen
+  state.highScore = loadHighScore();
   showScreen('game-screen');
 
-  // Reset UI
   updateUI();
   updateIngredientButtons();
   updateWorkspace();
   dom.serveBtn.disabled = true;
 
-  // Start first customer
   nextCustomer();
 }
 
-// Game over
 function gameOver() {
   stopTimer();
   state.isProcessing = true;
 
-  // Update high score
   const isNewHigh = state.score > state.highScore;
   if (isNewHigh) {
     state.highScore = state.score;
-    localStorage.setItem('dreamBakeryHighScore', state.highScore.toString());
+    saveHighScore(state.highScore);
   }
 
-  // Show game over screen with stats
   dom.finalScore.textContent = state.score;
   dom.finalCoins.textContent = state.coins;
   dom.finalLevel.textContent = state.level;
 
-  const hsDisplay = isNewHigh ? '🏆 ' + state.highScore + ' (NEW!)' : state.highScore;
-  dom.highScore.textContent = hsDisplay;
+  const hsLabel = isNewHigh ? state.highScore + ' (NEW!)' : state.highScore;
+  dom.highScore.textContent = hsLabel;
 
-  setTimeout(() => {
-    showScreen('gameover-screen');
-  }, 500);
+  setTimeout(() => showScreen('gameover-screen'), 500);
 }
 
-// Restart the game from game over screen
 function restartGame() {
   startGame();
 }
@@ -685,63 +624,57 @@ function restartGame() {
 // EVENT LISTENERS
 // ============================================================
 
-// Play button
-dom.playBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  startGame();
-});
-
-// Restart button
-dom.restartBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  restartGame();
-});
-
-// Ingredient buttons (event delegation)
-dom.ingredientsRow.addEventListener('click', (e) => {
-  const btn = e.target.closest('.ingredient-btn');
-  if (btn) {
+function bindEvents() {
+  dom.playBtn.addEventListener('click', e => {
     e.preventDefault();
-    selectIngredient(btn.dataset.ingredient);
-  }
-});
-
-// Serve button
-dom.serveBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  serveOrder();
-});
-
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && dom.startScreen.classList.contains('active')) {
     startGame();
-  }
-  if (e.key === 'Enter' && dom.gameoverScreen.classList.contains('active')) {
+  });
+
+  dom.restartBtn.addEventListener('click', e => {
+    e.preventDefault();
     restartGame();
-  }
-  if (e.key === ' ' || e.key === 'Enter') {
-    if (dom.gameScreen.classList.contains('active') && !dom.serveBtn.disabled) {
+  });
+
+  dom.ingredientsRow.addEventListener('click', e => {
+    const btn = e.target.closest('.ingredient-btn');
+    if (btn) {
       e.preventDefault();
-      serveOrder();
+      selectIngredient(btn.dataset.ingredient);
     }
-  }
-  // Number keys 1-5 for ingredients
-  const ingredientMap = { '1': 'base', '2': 'choco', '3': 'berry', '4': 'milk', '5': 'sugar' };
-  if (e.key in ingredientMap && dom.gameScreen.classList.contains('active')) {
-    selectIngredient(ingredientMap[e.key]);
-  }
-});
+  });
+
+  dom.serveBtn.addEventListener('click', e => {
+    e.preventDefault();
+    serveOrder();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && dom.startScreen.classList.contains('active')) {
+      startGame();
+    } else if (e.key === 'Enter' && dom.gameoverScreen.classList.contains('active')) {
+      restartGame();
+    } else if ((e.key === ' ' || e.key === 'Enter') && dom.gameScreen.classList.contains('active')) {
+      if (!dom.serveBtn.disabled) {
+        e.preventDefault();
+        serveOrder();
+      }
+    }
+
+    const map = { '1': 'base', '2': 'choco', '3': 'berry', '4': 'milk', '5': 'sugar' };
+    if (e.key in map && dom.gameScreen.classList.contains('active')) {
+      selectIngredient(map[e.key]);
+    }
+  });
+}
 
 // ============================================================
 // INITIALIZATION
 // ============================================================
 
-// Load high score on init
-state.highScore = parseInt(localStorage.getItem('dreamBakeryHighScore')) || 0;
-
-// Create background sparkles on start screen
-createBackgroundSparkles();
-
-// Show start screen initially
-showScreen('start-screen');
+function init() {
+  cacheDom();
+  state.highScore = loadHighScore();
+  createBackgroundSparkles();
+  showScreen('start-screen');
+  bindEvents();
+}
